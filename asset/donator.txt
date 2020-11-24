@@ -1,0 +1,6 @@
+joe				|10000
+bintang				|20000
+daniel				|30000
+bintang				|15000
+bebas				|400000
+ssigil@gmail.com				|500
