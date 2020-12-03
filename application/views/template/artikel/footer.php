@@ -27,8 +27,15 @@
       }
     });
   });
+  $("#btnLogin").on("click", function(){
+    $("#login_signup").toggle();
+    $("#Login").toggle();
+  });
+  $("#btnSignup").on("click", function(){
+    $("#login_signup").toggle();
+    $("#Signup").toggle();
+  });
 </script>
-
 
 </body>
 

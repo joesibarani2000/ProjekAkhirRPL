@@ -2,6 +2,20 @@
 
 class M_artikel extends CI_Model
 {
+
+	public function sign_up($data)
+	{
+        if ($this->db->insert('user', $data)) {
+            return true;
+        } else {
+            return false;
+        }
+	}
+
+	public function get_user()
+	{
+		return $this->db->get('user')->result_array();
+	}
 	
 	public function tampil_data()
 	{
@@ -42,5 +56,3 @@ class M_artikel extends CI_Model
 		$this->db->insert('donator', $data);
 	}
 }
-
-?>

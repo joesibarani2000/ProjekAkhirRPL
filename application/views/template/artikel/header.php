@@ -30,6 +30,9 @@ $_SESSION['i'] = 0;
     ul {
       text-align: justify;
     }
+    #Login, #Signup{
+      display: none;
+    }
   </style>
 
 </head>

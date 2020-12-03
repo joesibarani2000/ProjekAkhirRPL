@@ -2,7 +2,6 @@
   <div class="container">
 
     <div class="row">
-
       <!-- Post Content Column -->
       <div class="col-lg-8">
 
@@ -35,15 +34,58 @@
         <!-- Comments Form -->
         <div class="card my-4">
           <h5 class="card-header">Leave a Comment:</h5>
-          <div class="card-body">
-            <form method="post" action="<?php echo base_url() . 'homepage/tambahKomentar' ?>">
-              <div class="form-group">
-                <input type="hidden" name="idArtikel" value="<?= $artikel['id'] ?>">
-                <textarea class="form-control" rows="3" name="komen" required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-          </div>
+          <?php if ($username == '') {
+            echo '
+            <div class="card-body text-center" id="login_signup">
+            Maaf anda harus login terlebih dahulu sebelum berkomentar </br></br>
+
+            <button type="button" class="btn btn-primary" id="btnLogin">
+            Login
+            </button>
+
+            <button type="button" class="btn btn-secondary" id="btnSignup">
+            Signup
+            </button>
+            ';
+          } else { ?>
+            <div class="card-body">
+              <form method="post" action="<?php echo base_url() . 'homepage/tambahKomentar' ?>">
+                <div class="form-group">
+                  <input type="hidden" name="idArtikel" value="<?= $artikel['id'] ?>">
+                  <input type="hidden" name="username" value="<?= $username ?>">
+                  <textarea class="form-control" rows="3" name="komen" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Post as <?= $username ?></button>
+                <a href="<?php echo base_url() . 'homepage/logout' ?>">Logout</a>
+              </form>
+            <?php } ?>
+            </div>
+
+            <div class="card-body" id="Login">
+              <form method="post" action="<?php echo base_url() . 'homepage/login' ?>">
+                <div class="form-group">
+                  <h3 class="text-center text-info">Login</h3>
+                  <input type="hidden" name="idArtikel" value="<?= $artikel['id'] ?>">
+                  <input type="text" name="email" class="form-control" placeholder="Email">
+                  <input type="password" name="password" class="form-control" placeholder="Password">
+                </div>
+                <button type="submit" name="Submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+
+            <div class="card-body" id="Signup">
+              <form method="post" action="<?php echo base_url() . 'homepage/signup' ?>">
+                <div class="form-group">
+                  <h3 class="text-center text-info">Signup</h3>
+                  <input type="hidden" name="idArtikel" value="<?= $artikel['id'] ?>">
+                  <input type="text" name="username" class="form-control" placeholder="Username">
+                  <input type="text" name="email" class="form-control" placeholder="Email">
+                  <input type="password" name="password" class="form-control" placeholder="Password">
+                </div>
+                <button type="submit" name="Submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+
         </div>
 
         <!-- Single Comment -->
@@ -57,5 +99,7 @@
             </div>
           </div>
         <?php endforeach; ?>
-
       </div>
+
+      <!-- Modal -->
+      <!-- Modal Login-->

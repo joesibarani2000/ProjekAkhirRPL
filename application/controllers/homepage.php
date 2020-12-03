@@ -70,9 +70,20 @@ class Homepage extends CI_Controller
 			$pathi[] = $data['path_gambar'];
 		}
 
+		session_start();
+		if (isset($_SESSION['email']) && isset($_SESSION['password'])) {
+			$rs = $this->m_artikel->get_user();
+			foreach ($rs as $data) {
+				$username = $data['username'];
+			}
+		} else {
+			$username = '';
+		}
+
 		$data['quote'] = $quote;
 		$data['quotePlus'] = $quotePlus;
 		$data['judul'] = 'Home';
+		$data['username'] = $username;
 		$data['idi'] = $idi;
 		$data['titlei'] = $titlei;
 		$data['writeri'] = $writeri;
@@ -85,13 +96,75 @@ class Homepage extends CI_Controller
 		$this->load->view('template/footer');
 	}
 
+	public function signup()
+	{
+		$idArtikel		= $this->input->post('idArtikel');
+		$username		= $this->input->post('username');
+		$email			= $this->input->post('email');
+		$password		= $this->input->post('password');
+
+		$data = array(
+			'username' => $username,
+			'email'		=> $email,
+			'password'		=> $password,
+		);
+
+		$this->m_artikel->sign_up($data, 'user');
+		redirect('homepage/data_ID/' . $idArtikel);
+	}
+
+	public function login()
+	{
+		$post = $this->m_artikel->get_user();
+		session_start();
+		if (isset($_SESSION['email']) && isset($_SESSION['password'])) { //kalau sudah login langsung masuk ke index
+
+			exit;
+		} else {
+			if (isset($_POST['Submit'])) {
+				$idArtikel = $this->input->post('idArtikel');
+				$user = $this->input->post('email');
+				$pass = $this->input->post('password');
+
+				foreach ($post as $data) {
+					if ($user == $data['email'] && $pass == $data['password']) {
+						$_SESSION['email'] = $user;
+						$_SESSION['password'] = $pass;
+						redirect('homepage/data_ID/' . $idArtikel);
+						exit;
+					} else {
+						$msg = "<span style='color:red'>Invalid Login</span>";
+					}
+				}
+			}
+		}
+		redirect('homepage/data_ID/' . $idArtikel);
+	}
+
+	public function logout()
+	{
+		$this->load->view('logout');
+	}
+
 	public function data_ID($id)
 	{
+		session_start();
+		if (isset($_SESSION['email']) && isset($_SESSION['password'])) {
+			$rs = $this->m_artikel->get_user();
+			foreach ($rs as $data) {
+				if ($_SESSION['email'] == $data['email'] && $_SESSION['password'] == $data['password']) {
+					$username = $data['username'];
+				}
+			}
+		} else {
+			$username = '';
+		}
 		$rs = $this->m_artikel->tampil_dataID($id);
 		$data['artikel'] = $rs;
 		$data['judul']	 = $rs['artikel_judul'];
 		$data['allData'] = $this->m_artikel->tampil_data();
 		$data['komen']	 = $this->m_artikel->tampil_komentar($id);
+		$data['username'] = $username;
 		$data['controller'] = $this;
 		$this->load->view('template/artikel/header', $data);
 		$this->load->view('artikel', $data);
@@ -102,7 +175,7 @@ class Homepage extends CI_Controller
 	public function cariArtikel()
 	{
 		$data['cari'] = $this->input->post('cari');
-		if($data['cari']){
+		if ($data['cari']) {
 			$data['artikel'] = $this->m_artikel->cari_artikel();
 			$data['allData'] = $this->m_artikel->tampil_data();
 			$data['controller'] = $this;
@@ -117,7 +190,7 @@ class Homepage extends CI_Controller
 	public function tambahKomentar()
 	{
 		$idArtikel		= $this->input->post('idArtikel');
-		$nama			= 'Anonymous';
+		$nama			= $this->input->post('username');
 		$komentar		= $this->input->post('komen');
 
 		$data = array(
@@ -130,7 +203,8 @@ class Homepage extends CI_Controller
 		redirect('homepage/data_ID/' . $idArtikel);
 	}
 
-	public function tambahDonasi(){
+	public function tambahDonasi()
+	{
 		$name = $this->input->post('name');
 		$amount = $this->input->post('amount');
 

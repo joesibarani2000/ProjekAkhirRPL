@@ -112,7 +112,6 @@
         </tr>
       <?php endfor; ?>
     </table>
-
   </div>
 
 
